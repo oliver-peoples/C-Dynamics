@@ -9,29 +9,29 @@ namespace dyna
     template <typename T> class Particle : public cgeo::PointE3<T>
     {
     private:
-        bool energy_kinetic_updated, energy_potential_updated;
-        bool momentum_updated;
-        T energy_kinetic, energy_potential;
-        hmath::Vector3<T> momentum;
-        T mass = 0;
-        T charge = 0;
-        hmath::Vector3<T> velocity;
-
+        T _mass = 0;
+        T _charge = 0;
+        hmath::Vector3<T> _velocity;
     public:
+        
+
         Particle() {}
         ~Particle() {}
 
-        template <typename m_T> void setMass(m_T m)
+        T& mass()
         {
-            this->mass = T(m);
+            return this->_mass;
         }
 
-        T getMass()
+        T& charge()
         {
-            return this->mass;
+            return this->_charge;
         }
 
-
+        hmath::Vector3<T>& velocity()
+        {
+            return this->_velocity;
+        }
     };
 
     template <typename T> class ParticleSystem
