@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/finn/C-Dynamics/examples/build",
-  "command": "/usr/bin/g++-9  -I/home/finn/Hamiltonian-Mathematics -I/home/finn/C-Geometry -I/home/finn/C-Dynamics -isystem /usr/local/include/opencv4 -g -o CMakeFiles/two_body_simulation.dir/two_body/source.cpp.o -c /home/finn/C-Dynamics/examples/two_body/source.cpp",
-  "file": "/home/finn/C-Dynamics/examples/two_body/source.cpp"
-}
-]

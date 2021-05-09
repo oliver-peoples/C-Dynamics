@@ -4,6 +4,7 @@
 #include <vector>
 #include <hmath.hpp>
 #include <promote.hpp>
+#include <limits>
 #include <dyna/core/units.hpp>
 #include <dyna/core/td_chain.hpp>
 #include <dyna/core/negligible_radius_bodies.hpp>

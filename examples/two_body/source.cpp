@@ -1,4 +1,12 @@
-#include "../includes.hpp"
+#include <iostream>
+#include <vector>
+#include <ostream>
+#include <fstream>
+#include <chrono>
+#include <hmath.hpp>
+#include <dyna/core.hpp>
+#include <dyna/systems.hpp>
+#include <dyna/viz.hpp>
 
 std::vector<long double> dts;
 
@@ -15,10 +23,10 @@ int main()
 
     // The list of timesteps to run the simulation for
 
-    dts.push_back(0.1 * dyna::unit::day_ephemerides);
-    dts.push_back(0.01 * dyna::unit::day_ephemerides);
-    dts.push_back(0.001 * dyna::unit::day_ephemerides);
-    dts.push_back(1 * dyna::unit::second);
+    dts.push_back(1.0e-1 * dyna::unit::day_ephemerides);
+    dts.push_back(1.0e-2 * dyna::unit::day_ephemerides);
+    dts.push_back(1.0e-3 * dyna::unit::day_ephemerides);
+    dts.push_back(1.0e-4 * dyna::unit::day_ephemerides);
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // That's it, nothing else you can edit!
@@ -64,7 +72,13 @@ int main()
         system.addPointMass(m1);
         system.addPointMass(m2);
 
-        std::cout << "test" << std::endl;
+        long double epoch = t_0;
+
+        while (epoch < t_n)
+        {
+            system.symplecticEulerPropagation(epoch);
+        }
+        
     }
 
     //     // Keep track of timesteps
