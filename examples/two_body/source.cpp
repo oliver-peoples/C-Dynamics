@@ -72,54 +72,18 @@ int main()
         system.addPointMass(m1);
         system.addPointMass(m2);
 
+        // Set the origin of the epoch for the system
+
         long double epoch = t_0;
+
+        // We are going to want to keep track of the positions of the orbiting bodies
+        // so let's create a list of lists of points
 
         while (epoch < t_n)
         {
             system.symplecticEulerPropagation(epoch);
         }
-        
     }
-
-    //     // Keep track of timesteps
-
-    //     std::vector<long double> t_steps;
-
-    //     // Set t = 0
-
-    //     long double t = t_0;
-
-    //     // Seed and keep track of epoch time steps
-
-    //     std::vector<long double> t_stamps;
-    //     t_stamps.push_back(0);
-
-    //     auto t_stamp_0 = std::chrono::high_resolution_clock::now();
-
-    //     // Main simulation loop
-
-    //     for (t; t < t_n; t += dt)
-    //     {
-    //         hmath::Vector3<long double> r = m1.position - m2.position;
-
-    //         long double r3 = powf128(powf128(r.i, 2) + powf128(r.j, 2) + powf128(r.k, 2), 1.5);
-
-    //         m1.position += dt * m1.velocity;
-    //         m2.position += dt * m2.velocity;
-
-    //         m1.velocity += (-dt * dyna::unit::G * m2.mass * (r / r3));
-    //         m2.velocity += (-dt * dyna::unit::G * m1.mass * ((-r) / r3));
-
-    //         t_steps.push_back(t);
-
-    //         auto t_stamp = std::chrono::high_resolution_clock::now();
-    //         auto ns_int = std::chrono::duration_cast<std::chrono::nanoseconds>(t_stamp - t_stamp_0);
-
-    //         t_stamps.push_back(ns_int.count() * 0.000000001);
-    //     }
-
-    //     // Save these results to a csv
-    // }    
-
-    // return 0;
+    
+    return 0;
 }

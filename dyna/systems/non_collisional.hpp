@@ -48,7 +48,7 @@ namespace dyna
                         {
                             hmath::Vector3<T> r = study_point - this->point_masses[influencing_point_idx].state_vector.td0;
 
-                            td2 += -(this->dt * dyna::unit::G * (r / pow(r.norm(), 3)));
+                            td2 += -(this->dt * dyna::unit::G * this->point_masses[influencing_point_idx].mass * (r / pow(r.norm(), 3)));
                         } 
                     }
 
@@ -73,20 +73,20 @@ namespace dyna
                 {
                     point_mass.state_vector.td0 += this->dt * point_mass.state_vector.td1; 
                 }
-
+                
                 for (size_t study_point_idx = 0; study_point_idx < this->point_masses.size(); study_point_idx++)
                 {
                     hmath::Vector3<T> td2 = { 0,0,0 };
 
-                    hmath::Vector3<T> study_point = this->point_masses[study_point_idx].td0;
+                    hmath::Vector3<T> study_point = this->point_masses[study_point_idx].state_vector.td0;
 
                     for (size_t influencing_point_idx = 0; influencing_point_idx < this->point_masses.size(); influencing_point_idx++)
                     {
                         if (influencing_point_idx != study_point_idx)
                         {
-                            hmath::Vector3<T> r = study_point - this->point_masses[influencing_point_idx].td0;
+                            hmath::Vector3<T> r = study_point - this->point_masses[influencing_point_idx].state_vector.td0;
 
-                            td2 += -(this->dt * dyna::unit::G * (r / pow(r.norm(), 3)));
+                            td2 += -(this->dt * dyna::unit::G * this->point_masses[influencing_point_idx].mass * (r / pow(r.norm(), 3)));
                         } 
                     }
 
