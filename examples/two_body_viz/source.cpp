@@ -18,15 +18,6 @@ long double m_mercury = 3.301e23 * hmath::unit::kilogram;
 
 int main()
 {
-    // Define camera parameters
-
-    cgeo::projection::SimplePinholeCamera<long double> spc;
-
-    hmath::Vector3<long double> camera_center = { 0,0,d_em * 2.5 };
-    hmath::Quaternion<long double> orientation = { 0.707,0,0.707,0 };
-
-    spc.simpleSetup(camera_center, orientation, 100, 1280, 960, 320, 240);
-
     // Define simulation paramters
 
     long double t_n = 270 * hmath::unit::day_ephemerides;
@@ -39,6 +30,15 @@ int main()
 
     for (long double dt : dts)
     {
+        // Define camera parameters
+
+        cgeo::projection::SimplePinholeCamera<long double> spc;
+
+        hmath::Vector3<long double> camera_center = { 0,0,d_em * 2.5 };
+        hmath::Quaternion<long double> orientation = { 0.707,0,0.707,0 };
+
+        spc.simpleSetup(camera_center, orientation, 100, 1280, 960, 320, 240);
+        
         // Tell the user what timestep is being simulated
 
         std::cout << "Simulating for timestep dt = " << dt << std::endl;
