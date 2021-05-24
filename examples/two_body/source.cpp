@@ -6,40 +6,25 @@
 #include <hmath.hpp>
 #include <dyna/core.hpp>
 #include <dyna/systems.hpp>
-#include <dyna/viz.hpp>
 
-std::vector<long double> dts;
+// Define some important constants
+
+long double d_em = 4.6e10 * hmath::unit::meter;
+long double v_em = 59.050e3 * hmath::unit::meter / hmath::unit::second;
+long double m_sun = 1.989e30 * hmath::unit::kilogram;
+long double m_mercury = 3.301e23 * hmath::unit::kilogram;
 
 int main()
 {
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // User editable variables
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Define simulation paramters
 
-    // Define simulation temporal domain
+    long double t_n = 270 * hmath::unit::day_ephemerides;
 
-    long double t_0 = 0 * dyna::unit::day_ephemerides;
-    long double t_n = 270 * dyna::unit::day_ephemerides;
-
-    // The list of timesteps to run the simulation for
-
-    dts.push_back(1.0e-1 * dyna::unit::day_ephemerides);
-    dts.push_back(1.0e-2 * dyna::unit::day_ephemerides);
-    dts.push_back(1.0e-3 * dyna::unit::day_ephemerides);
-    dts.push_back(1.0e-4 * dyna::unit::day_ephemerides);
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // That's it, nothing else you can edit!
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    // Define start parameters
-
-    long double d_em = 4.6e10 * dyna::unit::meter;
-    long double v_em = 59.050e3 * dyna::unit::meter / dyna::unit::second;
-    long double m_sun = 1.989e30 * dyna::unit::kilogram;
-    long double m_mercury = 3.301e23 * dyna::unit::kilogram;
-
-    // For loop which we will run simulation variants in
+    std::vector<long double> dts;
+    
+    dts.push_back(0.1 * hmath::unit::day_ephemerides);
+    dts.push_back(0.01 * hmath::unit::day_ephemerides);
+    dts.push_back(0.001 * hmath::unit::day_ephemerides);
 
     for (long double dt : dts)
     {
@@ -47,43 +32,77 @@ int main()
 
         std::cout << "Simulating for timestep dt = " << dt << std::endl;
 
-        // Sun definition (its m1)
+        // Sun definition
 
-        dyna::PointMass<long double> m1;
+        dyna::Particle<long double> m1;
         
         m1.mass = m_sun;
-        m1.position() = { 0,0,0 };
-        m1.velocity() = { 0,0,0 };
 
-        // Mercury definition (its m2)
+        // Mercury definition
 
-        dyna::PointMass<long double> m2;
+        dyna::Particle<long double> m2;
 
         m2.mass = m_mercury;
-        m2.position() = { d_em,0,0 };
-        m2.velocity() = { 0,v_em,0 };
+        m2.entity_state(dyna::KD0<long double>(d_em,0,0));
+        m2.entity_state(dyna::KD1<long double>(0,v_em,0));
 
-        // Add these to a non collisional system
+        dyna::ParticleSystem<long double> env;
+        env.dt = dt;
 
-        dyna::system::NonCollisionalSystem<dyna::PointMass<long double>> system;
+        env.addParticle(m1);
+        env.addParticle(m2);
 
-        system.dt = dt;
+        // Set up csv to record m1, m2 data
 
-        system.addPointMass(m1);
-        system.addPointMass(m2);
+        std::ofstream m1_csv, m2_csv;
 
-        // Set the origin of the epoch for the system
+        m1_csv.open("../two_body/m1_" + std::to_string(dt) + "_.csv");
+        m2_csv.open("../two_body/m2_" + std::to_string(dt) + "_.csv");
 
-        long double epoch = t_0;
+        std::string header = "t_stamp,x,y,z,x_dot,y_dot,z_dot\n";
 
-        // We are going to want to keep track of the positions of the orbiting bodies
-        // so let's create a list of lists of points
+        m1_csv << header;
+        m2_csv << header;
 
-        while (epoch < t_n)
+        // Set simulation start time
+
+        long double t_0 = 0 * hmath::unit::day_ephemerides;
+
+        while (t_0 < t_n)
         {
-            system.symplecticEulerPropagation(epoch);
+            env._3DOF_SymplecticNewtonianPropagation(&t_0);
+
+            hmath::Vector3<long double> m1_kd0, m2_kd0, m1_kd1, m2_kd1;
+
+            m1_kd0 = env.particles[0].entity_state.KD0();
+            m2_kd0 = env.particles[1].entity_state.KD0();
+
+            m1_kd1 = env.particles[0].entity_state.KD1();
+            m2_kd1 = env.particles[1].entity_state.KD1();
+
+            m1_csv << std::to_string(t_0) << ",";
+            m2_csv << std::to_string(t_0) << ",";
+
+            m1_csv << std::to_string(m1_kd0.i) << ",";
+            m1_csv << std::to_string(m1_kd0.j) << ",";
+            m1_csv << std::to_string(m1_kd0.k) << ",";
+
+            m2_csv << std::to_string(m2_kd0.i) << ",";
+            m2_csv << std::to_string(m2_kd0.j) << ",";
+            m2_csv << std::to_string(m2_kd0.k) << ",";
+
+            m1_csv << std::to_string(m1_kd1.i) << ",";
+            m1_csv << std::to_string(m1_kd1.j) << ",";
+            m1_csv << std::to_string(m1_kd1.k) << "\n";
+
+            m2_csv << std::to_string(m2_kd1.i) << ",";
+            m2_csv << std::to_string(m2_kd1.j) << ",";
+            m2_csv << std::to_string(m2_kd1.k) << "\n";
         }
+
+        m1_csv.close();
+        m2_csv.close();
     }
-    
+        
     return 0;
 }

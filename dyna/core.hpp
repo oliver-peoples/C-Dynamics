@@ -4,9 +4,10 @@
 #include <vector>
 #include <hmath.hpp>
 #include <promote.hpp>
+#include <units.hpp>
 #include <limits>
-#include <dyna/core/units.hpp>
-#include <dyna/core/td_chain.hpp>
-#include <dyna/core/negligible_radius_bodies.hpp>
-#include <dyna/core/bulk_body.hpp>
-#include <dyna/core/iostream_operators.hpp>
+#include <dyna/core/dyna_namespace.hpp>
+#include <dyna/core/kinematic_derivatives.hpp>
+#include <dyna/core/physika.hpp>
+#include <dyna/core/particle.hpp>
+#include <dyna/core/rigid_body.hpp>
