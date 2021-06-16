@@ -3,7 +3,7 @@
 #include <ostream>
 #include <fstream>
 #include <chrono>
-#include <hmath.hpp>
+#include <hmath/core.hpp>
 #include <dyna/core.hpp>
 #include <dyna/systems.hpp>
 #include <CGeometry/core.hpp>

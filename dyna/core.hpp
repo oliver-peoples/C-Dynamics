@@ -2,9 +2,7 @@
 
 #include <ostream>
 #include <vector>
-#include <hmath.hpp>
-#include <promote.hpp>
-#include <units.hpp>
+#include <hmath/core.hpp>
 #include <limits>
 #include <dyna/core/dyna_namespace.hpp>
 #include <dyna/core/kinematic_derivatives.hpp>

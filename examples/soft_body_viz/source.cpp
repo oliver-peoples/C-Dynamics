@@ -1,3 +1,4 @@
+#include <hmath/core.hpp>
 #include <dyna/core.hpp>
 #include <dyna/systems.hpp>
 
